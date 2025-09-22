@@ -10,7 +10,7 @@ this is basically a more casual version of my resume and work experience.
 ### since august 2023
 i wanted to focus on learning about ai and how to make money outside of traditional employment (including consulting / freelancing).
 
-this was when developed all of the ai apps i shared above (and more that i didn't share that were earlier prototypes and apps that were more like simple wrappers).
+this was when i developed all of the ai apps i shared on the [projects](./projects.md) page (and more that i didn't share that were earlier prototypes and apps that were more like simple wrappers).
 
 
 ### eyris - senior software engineer (contractor) - march 2023 to august 2023
@@ -40,7 +40,7 @@ towards the end of my time there, i - with my manager's blessing - started askin
 
 
 ### tabu art - cofounder - may 2020 to may 2021
-this is the nft art marketplace i worked on and described in more detail above.
+this is the nft art marketplace i worked on and described in more detail on the [projects](./projects.md) page.
 
 
 ### raytheon - senior cyber engineer ii - june 2013 to june 2020

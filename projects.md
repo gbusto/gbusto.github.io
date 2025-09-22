@@ -12,9 +12,9 @@ most of these were full end-to-end apps that were deployed, had a signup flow, a
 
 (🚧 working on creating a new page to go into more detail about blocksmith, its progression, and the trial and error i went through)
 
-this is the "real" ai product i mentioned above. by real, i mean it's more than just a gpt wrapper. it's a webapp that let's you create 3d block models (think minecraft) from a prompt. it also has the ability to texture them using the classic pixel art look that minecraft is known for.
+this is the "real" ai product i mentioned in my home page intro. by real, i mean it's more than just a gpt wrapper. it's a webapp that let's you create 3d block models (think minecraft) from a prompt. it also has the ability to texture them using the classic pixel art look that minecraft is known for.
 
-you can actually visit the site and use the tool for free at https://blocksmithai.com. i created it to address major friction in the development of games on the hytopia game platform (think minecraft-meets-roblox), and currently have a few paying customers (including a team account using it to create models for their games). i've also had probably close to, if not more than, 100 free users over the last several months without putting any real effort into marketing because i was focused on building. i believe marketing gets easier once you know your product is amazing, and it's *almost* there.
+you can actually visit the site and use the tool for free at [blocksmithai.com](https://blocksmithai.com). i created it to address major friction in the development of games on the hytopia game platform (think minecraft-meets-roblox), and currently have a few paying customers (including a team account using it to create models for their games). i've also had probably close to, if not more than, 100 free users over the last several months without putting any real effort into marketing because i was focused on building. i believe marketing gets easier once you know your product is amazing, and it's *almost* there.
 
 i'll provide a technical writeup sharing some of the details of the application, experiments i ran, dead ends i ran into, etc. but going into this, i had zero experience in 3d, and zero experience with minecraft (aside from knowing that it existed, and that everything is blocky and pixelated).
 
