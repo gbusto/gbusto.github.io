@@ -7,10 +7,21 @@ layout: page
 
 these were all relatively simple games, but still a great learning experience. at some point i think would be very interesting to build my own physics and game engine just to learn. but now is not that time.
 
+- [hytopia web-based games](#a-couple-of-web-based-hytopia-games)
+    - [the overseer](#the-overseer)
+    - [battle cube](#battle-cube)
+- [mobile games](#mobile-games)
+    - [brick break](#brick-break)
+    - [hovr bird](#hovr-bird)
+
+
 ### a couple of web-based hytopia games
 
 i built two games using hytopia's sdk. these were both for game building competitions, but also made for fun side projects.
 
+
+#### the overseer
+![The Overseer](images/the-overseer.png "The Overseer")
 the first one was called The Overseer. it's a single or multi-player co-op game where you're stuck in a damaged biodome with a rogue ai operator in charge of protecting the biodome. it sees you and other players as hostiles and tries to eliminate you using its biodome control system. attacks included things like increasing and decreasing temperatures to hurt you, a uv light that targets one player and follows them around (if you get stuck or stop moving, it can do some real damage), ground electrification, and so on.
 
 i designed it such that the game would collect global game state including players remaining, player health, current biodome temperature, and so on, feed it to an llm, and have the llm use structured output to determine what actions to take next, and what taunts (if any) to communicate to the players. i used a tts model hosted on replicate.com to convert the text the speech, and then had a script that would apply randomized distortions to the voice depending on the ai overseer's remaining health. lower health meant a higher chance of significant corruption to the audio file; higher health meant mostly stable audio file. the inspiration for all of this was glados from the portal games, as she becomes increasingly paranoid and glitchy.
@@ -19,6 +30,9 @@ the tts feature was a little tricky to get working. hytopia game models, audio, 
 
 [overseer game demo](https://x.com/gabebusto/status/1912167058596372716)
 
+
+#### battle cube
+![Battle Cube](images/battle-cube.png "Battle Cube")
 i also created a fun little first person shooter game called battle cube. it was a simple deathmatch style game fought on what looks like a giant rubiks cube with weird structures on the surface for more interesting gameplay.
 
 there wasn't much special about this, but there were some fun details.
@@ -36,13 +50,15 @@ and here's a look at the final map and game:
 [battle cube demo](https://x.com/gabebusto/status/1907040018863992878)
 
 
-## mobile games
+### mobile games
 while working at raytheon, i built 2 mobiles games:
 - brick break
 - hovr bird
 
 
-### brick break
+#### brick break
+[Brick Break](https://apps.apple.com/us/app/brick-break/id1445634396)
+
 this was the first real thing i built and shared with the world. i built it on nights and weekends, with no ios experience whatsoever. i built it using Swift and SpriteKit. it was meant to be a copy of well known game at the time called Ballz built by ketchapp; that studio released so many big hit games. so i figured i'd just copy instead of trying to come up with something fresh.
 
 my true motivation was that i learned how the flappy bird creator made a ton of money (i think $50k/day at its peak from ads!) and i wanted to try making a game to see if i could make money from it. i ended up finding out though that i just really enjoyed the process of building *something* and sharing it with the world. it was one of the coolest feelings. everything i had worked on up to that point in my life was something that had to be kept secret and could never be shared. but this was something that i *could* share.
@@ -55,10 +71,10 @@ i ended up creating an llc for it, even though that was completely unnecessary. 
 
 in the end, it got mostly 5 star reviews (several from complete strangers!) and a one star review i think from a hater. it wasn't even constructive. you can still find it in the App Store, download, and play it. my wife and i actually still do play it when traveling!
 
-[Brick Break](https://apps.apple.com/us/app/brick-break/id1445634396)
 
+#### hovr bird
+[Hovr Bird](https://apkpure.com/hovr-bird/xyz.ashgames.hovrbird)
 
-### hovr bird
 this game was meant to be a flappy bird knockoff. this would come back to bite me in the end.
 
 but i started out using spritekit on ios because i already knew how to build with it. but there was some weird shaking of the screen when tapping, and i spent weeks trying to troubleshoot what was going on. it finally hit me when reading a comment online that maybe apple's spritekit wasn't a perfect piece of software because it, on its own, doesn't bring in money. so it might not get the tlc it deserves to keep it nice and polished.
@@ -78,5 +94,3 @@ i did a similar thing to make building new levels easily and create a sort of fa
 unfortunately, after ~2 months of building, apple flat out rejected it saying they had too many flappy bird clones. but i think it just depends on the reviewer you get, and how good or bad of a day they're having.
 
 the android version *did* make it to market though, although this wasn't the latest version i had in development. i had 2 other sets of themed levels that i guess were never released.
-
-[Hovr Bird](https://apkpure.com/hovr-bird/xyz.ashgames.hovrbird)

@@ -6,6 +6,12 @@ layout: page
 ## overview
 this is basically a more casual version of my resume and work experience.
 
+- [august 2023 to today](#since-august-2023)
+- [eyris - senior swe contractor](#eyris---senior-software-engineer-contractor---march-2023-to-august-2023)
+- [stripe - solutions architect](#stripe---solutions-architect---september-2021-to-november-2022)
+- [tabu art - cofounder](#tabu-art---cofounder---may-2020-to-may-2021)
+- [raytheon - senior cyber engineer ii](#raytheon---senior-cyber-engineer-ii---june-2013-to-june-2020)
+
 
 ### since august 2023
 i wanted to focus on learning about ai and how to make money outside of traditional employment (including consulting / freelancing).
