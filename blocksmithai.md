@@ -10,7 +10,7 @@ this is a page to go over aspects of blocksmith that i feel comfortable sharing 
 - [why i built this](#why-i-built-this)
 - [why blocksmith is different](#why-blocksmith-is-different)
 - [early prototype](#early-prototype)
-- [model generation overview](#overview)
+- [model generation overview](#model-generation-overview)
 - [texturing pipeline](#overview)
     - [why current tools fail](#overview)
     - [requirements i needed](#overview)
@@ -20,7 +20,7 @@ this is a page to go over aspects of blocksmith that i feel comfortable sharing 
 ### why i built this
 as mentioned on the [games](./games.md) page, i built 2 hytopia games. the first one i built introduced me to an unexpected friction point: getting custom blocky style assets/models for my game. building the game was actually not that tough to do; it was harder to find assets for my game.
 
-i found the best option at the time was meshy.ai and it's "voxel" style model generator. but it wasn't great. and i was a bit confused beween *voxel* and *blocky*. voxel style is a bunch of little cubes that make up a larger thing. blocky means using a single block per part of the model; like for a minecraft person, the head is a single block, the torso is a single block, etc. anyways, meshy seemed the closest and best option. i didn't know at the time or wasn't comfortable trying to download and host open source 3d models like hunyuan.
+i found the best option at the time was meshy.ai and it's "voxel" style model generator. but it wasn't great. and i was a bit confused beween *voxel* and *blocky*. voxel style is a bunch of little cubes that make up a larger thing. blocky means using a single block per part of the model; like for a minecraft person, the head is a single block, the torso is a single block, etc. (what i actually end up building is a 3d "blocky" style model generator.) anyways, meshy seemed the closest and best option. i didn't know at the time or wasn't comfortable trying to download and host open source 3d models like hunyuan.
 
 also, as i would find later, every single ai model, tool, or platform is designed around making high-poly, watertight meshes / 3d models. meaning it's a single monolithic mesh. they can't make true cuboid, blocky geometry. they can generate *approximate* cuboids, but it's all a single watertight mesh, the faces of cube aren't perfectly flat, the vertices aren't perfect 90-degree corners. and they're usually very high poly and relatively large files, which aren't ideal for a web-based game platform like hytopia.
 
@@ -64,6 +64,31 @@ i also got hints from the hytopia team engineers who were more well versed in th
 i eventually switched to a more advanced [generative process](https://x.com/gabebusto/status/1910100441519505819) that became the foundation of what it is today.
 
 
----
+### model generation overview
+as mentioned in the section above, i eventually discovered a more robust generative process to create block style models composed of several parts, as opposed voxel style, monolithic meshes. without revealing too much, i came up with a custom process that allows an llm to output a series of mesh parts that can be composed into a full model, with semantic node names and even allowing for a hierarchy to be created.
 
-more to come soon!
+what was interesting about this is that i think if i was more well versed in the world of 3d and ai models and how to read/apply research, i probably would have spent time trying to come up with an over-engineered solution. the fact that i was so naive may have been a kind of superpower because i tried something that would probably seem dumb to some really smart researchers, but it just happened to work.
+
+the result of this process is that i could (1) output a truly block style model that was ~optimized (minimal geometry) and ideal for web-based games (specifically hytopia), (2) with semantic node and group names, and (3) in a relatively short amount of time and with little compute power relative to SOTA 3d ai models.
+
+this was HUGE because it meant that i could:
+- easily animate these models given that they already had node names and groups you could target
+    - OR, i could use ai to animate models (which i can already do)
+- have fully semantic understanding of what regions of the texture atlas belong to which parts of the model
+- easily target and edit specific parts of a model by e.g. prompting ai
+- create a simple export process to convert the model to a `.bbmodel` file type so people could import it into blockbench (basically it's blender but for minecraft style assets, and much simpler to use and navigate)
+
+here are some demos from my x profile:
+- [multiple prompt-to-block models](https://x.com/gabebusto/status/1912313114231533990)
+- [a person wearing a hat](https://x.com/gabebusto/status/1912318527584809469)
+- [an xbox style controller](https://x.com/gabebusto/status/1912321084696801419)
+- [a cute lil dog](https://x.com/gabebusto/status/1912320086104301822)
+
+the texturing at this point was still VERY basic. but i learned a whole lot about it that i'll share below.
+
+the version of the model generation pipeline that's live on blocksmith today (as of September 2025) is *very* similar, but has been improved and optimized to allow ai to create more highly detailed models while saving on output tokens.
+
+
+### texturing pipeline
+
+coming soon!
