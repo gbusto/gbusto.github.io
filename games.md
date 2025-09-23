@@ -3,7 +3,7 @@ title: Gabe's Games
 layout: page
 ---
 
-## overview
+## games i created
 
 these were all relatively simple games, but still a great learning experience. at some point i think would be very interesting to build my own physics and game engine just to learn. but now is not that time.
 

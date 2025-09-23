@@ -4,7 +4,7 @@ layout: page
 ---
 
 ## quick intro
-i'm gabe, and i'm a builder at heart with a highly generalized skill set. over the last six months, i developed a deep interest in becoming something like an applied ai engineer or research engineer after building and launching what i would consider my first "real" ai product.
+i'm gabe, and i'm a builder at heart with a highly generalized skill set. over the last six months, i developed a deep interest in becoming something like an applied ai engineer or research engineer after building and launching what i would consider my first "real" ai product. see the technical writeup for it [here](./blocksmithai.md).
 
 i basically want to be able to take my builder skills + mindset, and focus my time and energy on building really cool, novel, and actually useful ai products and tools. i'm working on building up my foundational knowledge and skills, because i don't want to have any major limitations. e.g. if i need to take a research paper with no code and implement what they found (assuming its complete enough to do so), i want to be able to do that. this is what i'm working towards.
 

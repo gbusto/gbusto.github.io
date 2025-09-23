@@ -3,7 +3,7 @@ title: Gabe's Work Experience
 layout: page
 ---
 
-## overview
+## my work experience
 this is basically a more casual version of my resume and work experience.
 
 - [august 2023 to today](#since-august-2023)

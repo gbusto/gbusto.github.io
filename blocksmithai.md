@@ -3,7 +3,7 @@ title: Blocksmith AI
 layout: page
 ---
 
-## overview
+## blocksmith ai technical writeup
 this is a page to go over aspects of blocksmith that i feel comfortable sharing without giving too much away about how it works. i may at some point open source it or parts of it, but for now i'm keeping it as a closed saas app.
 
 - [why i built this](#why-i-built-this)
@@ -17,8 +17,8 @@ this is a page to go over aspects of blocksmith that i feel comfortable sharing 
     - [earliest version(s)](#earliest-versions)
     - [first projection attempt](#first-projection-attempt)
     - [improved per-block texturing](#improved-per-block-texturing)
-    - [creation of the latest pipeline](#overview)
-        - [3d-aware 2d diffusion](#overview)
+    - [creation of the latest pipeline](#creation-of-the-latest-pipeline)
+        - [3d-aware 2d diffusion](#3d-aware-2d-diffusion)
         - [manual multi-view with sdxl](#overview)
         - [manual multi-view with sd3.5](#overview)
         - [mv-adapter test](#overview)
@@ -138,6 +138,7 @@ you can pretty much guess what my requirements were based on everything i said a
 3. something that could re-use or generate a "proper" 3d block model texture atlas that will result in a pixelated look
 4. something that can paint across seams, but can also apply textures that respect seams when needed.
     - (this one wasn't mentioned above, but i'll touch on why it's important)
+5. *(added later)* i forgot that another BIG requirement is that my process needs to either (a) respect alpha testing / transparent pixels, and/or (b) be able to use transparency intentionally. (b) is MUCH more complicated than (a), so i settled for (a) right now.
 
 my original texturing process was focused on generating really simple square patterns and then squeezing them or stretching them to fit a face. basically, it would create a "texture" for a shirt. one for pants. one for skin. etc. then take that square texture, and force it to fit on every face of a block that should have that texture.
 
@@ -195,6 +196,8 @@ so what i settled on was this:
 - break the grid back into their individual orthographic images
 - run my process of extracting face regions and painting them onto each block face
 
+with this process in place and working, i would only need to spend $0.05/texturing job (at least for the replicate.com api call).
+
 now i need to solve yet *another* problem. we're only painting 4 views of the model. not to mention the fact that there might even be occluded faces from each of these views that also need to be painted. so i solved this the simplest way i could think. basically, i creating a json mapping that showed each cuboid and face of the model, and which ones had texturing, and which ones didn't. then i instructed the llm to use the prompt, along with this data, and output a full "texturing strategy" that gives me 100% coverage. its goal was to help take painted faces, and which painted faces can/should fit onto other unpainted faces, to create the most cohesive model possible.
 
 and in many cases, this *actually* worked. this silly, hacked together process was able to do a decent job.
@@ -205,4 +208,87 @@ from here, i really wasn't sure what to do to continue improving it, but i was c
 
 
 #### improved per-block texturing
-coming soon!
+the above projection attempt worked well on some things; but on models that had lots of narrow parts of small details, it would fail miserably.
+
+around the summer time (~early july 2025), i made a pretty big jump in model generation capability where blocksmith could now output more detailed models at a lower cost on the backend, and with higher accuracy.
+
+[here's an example](https://x.com/gabebusto/status/1936624813683945904) of a grand piano model it made, including making EACH piano key a separate block. this would have been impossible to do with the original version of the model generator that i was using.
+
+so now that i was able to generate models with much higher detail, the simple projection texturing pipeline i had would no longer work very well. so this prompted me to come up with a better per-block texturing version that could help in these cases. it would be as nice, it wouldn't be able to paint across seams, but it would be usable.
+
+what i ended up finding out is that replicate.com has a few small and cheap models that are decent at generating tileable textures. so i came up with a very simple process that looked like this:
+- an llm looks at our model's construction, and comes up with anywhere from 2-8 different "materials" to create, and it generates a prompt for each one
+- we then perform an api call per material with the prompt (each one takes maybe ~3-5 seconds)
+- we take all of those images, and then downsample them into smaller pixelated squares
+- then we apply each of those textures to each block that needs it
+
+the result is pretty nice for some things, and this became my go-to texturing method for lots of models.
+
+[here's a demo video](https://x.com/gabebusto/status/1939437582749712810) showing off how well it could do. i thought it was really nice given how simplistic it was.
+
+
+#### creation of the latest pipeline
+the creation of the latest pipeline though was a labor of love. this was ~1+ months of research, trial and error, and dead end after dead end.
+
+what was interesting about the process too is that i was trying to balance depth of research with speed; my ultimate goal was to build the best texturing engine i could, as quickly as i could. i didn't want to get lost in the weeds for too long and end up not delivering anything. so i optimized for speed and *some* depth of research, which really just means glossing over some papers and asking ai to help summarize things to me, and mostly focusing on research that also had published code and wasn't just theory.
+
+for all the different experiments below, it's also worth noting that i acquired 3d block models for training data ethically. i manually went through sketchfab and downloaded models that were (a) available to download (as opposed to ripping them from the sketchfab renderer), (b) allow for commercial use, and (c) did not have an explicit "no ai use" clause/statement.
+
+
+##### 3d-aware 2d diffusion
+given the requirements i had above, i thought the easiest thing to do, if possible, was to try and see if i could create some kind of controlnet adapter that could help prime sdxl to paint a 2d texture atlas with some 3d awareness.
+
+this would allow me to paint across seams, re-use a generated atlas, and even potentially apply transparency. this was doomed to fail from the start, but i wouldn't know that with certainty unless i tried.
+
+i ended up working with ai to create a script that would take each pixel on the texture atlas, and find its position in 3d world space as `x, y, z`. the goal was then to normalize each x/y/z value to fit within the range of 0-255, and the mapping would be: x => red, y => green, z => blue. we would even generate normalized position colors for pixels that are transparent in the final texture atlas.
+
+so what we would end up with is the original textured atlas with all the coloring already applied, and our 3d-positional atlas, where even transparent pixels in the final atlas are given a color and position. the hope is that sdxl would learn to use transparency in an artistic way.
+
+since i mentioned transparency, it's worth noting that sdxl does NOT support RGBA; it only supports RGB. so instead, i opted to map transparency pixels where alpha = 0 to `0xff00ff` (magenta). based on all the models i'd seen up to that point, i was confident it would be a safe color to use.
+
+i then worked with claude to create a modal script that would have a persistent web endpoint for diffusion, and that could use use controlnet canny edge guidance. once that was running successfully, it was time to run some tests. in order for this to work, we need edge guidance to ensure that sdxl knows what uv islands to focus on painting. i found that controlnet struggles to help provide edge guidance for regions that are smaller than 8 pixels in width and/or height. and this is a problem because it's possible for a block face in a model to have a 1px texture.
+
+this makes sense why it struggles i think because sdxl's core architecture of a unet downsamples images, and it's possible that in the final downsampling steps, regions that are too small end up getting lost. so what i found was that upscaling each atlas by 8x helped controlnet in guiding sdxl's ability to paint all uv islands fully.
+
+so this now sort of limits us. if we need to upscale each atlas by 8x, that means that if we're targeting for an input and output image from sdxl of 1024x1024, i can only use atlases that are a max of 128x128 in size. so i decided to move forwards with this anyways since it was just a test.
+
+the training data basically consisted of / was generated by:
+- iterating over each model in a directory
+- filtering out any models that had (a) more than one texture atlas, and (b) whose single atlas was larger than 128x128
+- extracting a single atlas from the model
+- figuring out every region of the atlas that should be "active". it's possible that in the final atlas, entire faces or blocks were painted with all transparent pixels. but i want to know all the faces on the atlas that actually belong to a block in the model.
+- figuring out the 3d world position of each pixel, then normalize into rgb format, and create the 3d-aware atlas
+- painting any region on both the input (3d aware) and output (original painted) atlases as magenta
+- upscaling each atlas by 8x, then padding it determinstically so that every image is 1024x1024
+- save it in a format that we can use for training.
+
+i also had a separate process for generating prompts for each model, where i rendered each model in a scene, took screenshots of it from multiple angles, then passed the screenshots to a multimodal model to caption it in a way that's appropriate for a diffusion model like sdxl.
+
+now it was time to write the training script. i'll be honest and say i did not handwrite it. for most of this entire process, i worked more as a product manager guiding ai, then stepping in, fixing, and rearchitecting things when needed. but keep in mind my goal at the time was to move as fast as i could to getting a usable and improved texturing engine. so i felt comfortable between claude opus 4, gpt 5, and gemini 2.5 pro each checking each others' work to make sure we were building this training script correctly. but it did fairly well here since there's lots of examples on how to setup a lora finetune script for sdxl.
+
+since many of the atlases are mostly empty space (now magenta), we needed to create a mask based on the 3d-aware atlas that focuses training only on uv islands / regions that are in use. this was done because the majority of the atlas is unused, so sdxl would only be learning from a very small part of the atlas being painted and the rest would just be noise.
+
+we also wanted to make sure the model was learning *something*. so this is also where i learned about the timesteps involved with the diffusion process of denoising. we tried measuring loss using something similar from a previous lora fine tune attempt of an llm. but when adapting it to sdxl lora, it was all over the place because it wasn't checking a consistent timestep. so i learned we need to check at a consistent timestep every single time to get a better understanding of whether or not the network was learning something.
+
+after lots of experimentation and tweaking with gpt, claude, and gemini, we were successfully able to prove that the network was learning *something*. but this wasn't going to be a viable path. the way i knew it was learning something though is the following:
+- since we upscaled each atlas by 8x, that means each pixel on the original atlas turns into an 8x8 pixel grid. 8x8 pixels still looks VERY small on a 1024x1024 image. but when using my trigger token, sdxl would actually paint in 8x8 pixels (or create solid color regions that were 8x8) and able to be downsized cleanly without (much) downsampling.
+- the trigger token worked, and when absent, it would likely not use the trained style.
+- from an earlier training, i found that it learned something unexpected. my prompt/caption generator didn't use a diverse enough set of words in the prompt across all the models. it repeated words like "retro game asset", "8-bit pixel art", and others. and even though i was training the text encoder with a trigger token, if i used the trigger token but left out those other keywords, the it wouldn't output in the desired style. so those keywords in the prompt had a higher weight that influenced whether or not it would paint with the trained style.
+
+below is a screenshot showing what the sdxl output was for a novel model (which was a wooden block model barrel), and the 3d-positional atlas created by my data pipeline. you'll see it still painted the entire atlas, but it somewhat stay in the lines. and this actually was an okay output for this model. but it turns out that was just luck because this model was very simple.
+![SDXL 3d-aware Diffision](images/blocksmith-3d-aware-diffusion.png)
+
+i realized after training that i just did NOT have enough data to really have controlnet learn to work with sdxl to condition it for 3d-aware diffusion on a 2d atlas. i thought i needed more data. so i came up with a new strategy: train controlnet + sdxl on a broad dataset of 10k+ models to learn general 3d-aware diffusion on a 2d atlas. THEN, i could use my block model atlases and fine tune on top of that.
+
+i found [step1x-3d](https://github.com/stepfun-ai/Step1X-3D), which is a 3d ai model, a while back. i recalled in their documentation that for their texturing pipeline, they had a curated set of 30k high quality textured models from the objaverse 3d model dataset. so with claude, we came up with a script that could use the objaverse model IDs to pull the models down and download them in large batches. i think i only ended up taking ~15k models, and it ended up being ~40-50GB of data. but similar to previous data clean, i needed to make sure that we used models had atlases that were 1024x1024, and that they only had one atlas for the entire model.
+
+i think my training script training script was pretty much ready to go without needing any major changes, so i ran a much longer fine tune job across 10k good models filtered from the the set of ~15k models downloaded.
+
+after it was done, i tried testing it out in some way that could demonstrate whether or not it learned anything. and it failed.. hard. i realized though that some of these atlases were setup in such a way that there's almost no way for sdxl + controlnet to work together and figure out what was what. the unwrapping of the model onto the atlas was highly non-deterministic, and semantically it made no sense. it would go from one object made of one material, and blend right into another object made of completely different material. i even tried just simple tests that would show me if it learned to paint like with hints like "paint the (thing) at the top green and everything else wood brown", and it couldn't do it. not even close.
+
+perhaps with more time i *could* find a way to make that work, but it would require more deterministic unwrapping, a deeper understanding of how controlnet influences sdxl, etc. but it was a good first shot i think.
+
+
+---
+
+more to come soon!

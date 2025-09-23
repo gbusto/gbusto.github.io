@@ -3,7 +3,7 @@ title: Gabe's Projects and Apps
 layout: page
 ---
 
-## overview
+## things i've built
 
 most of these were full end-to-end apps that were deployed, had a signup flow, and database. some were just prototypes or for fun.
 
