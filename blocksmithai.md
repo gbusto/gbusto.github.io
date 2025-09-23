@@ -4,7 +4,6 @@ layout: page
 ---
 
 ## overview
-
 this is a page to go over aspects of blocksmith that i feel comfortable sharing without giving too much away about how it works. i may at some point open source it or parts of it, but for now i'm keeping it as a closed saas app.
 
 - [why i built this](#why-i-built-this)
@@ -14,7 +13,15 @@ this is a page to go over aspects of blocksmith that i feel comfortable sharing 
 - [texturing pipeline](#texturing-pipeline)
     - [why current tools fail](#why-current-tools-fail)
     - [requirements i needed](#requirements-i-needed)
-    - [progression and experiments](#overview)
+- [texturing progression](#texturing-progression)
+    - [earliest version(s)](#earliest-versions)
+    - [first projection attempt](#first-projection-attempt)
+    - [improved per-block texturing](#improved-per-block-texturing)
+    - [creation of the latest pipeline](#overview)
+        - [3d-aware 2d diffusion](#overview)
+        - [manual multi-view with sdxl](#overview)
+        - [manual multi-view with sd3.5](#overview)
+        - [mv-adapter test](#overview)
 
 
 ### why i built this
@@ -142,6 +149,60 @@ as i showed in the zombie image above from my latest texturing engine update, yo
 ![Blocksmith Zombie Model](images/blocksmith-zombie-model.png "Blocksmith Zombie Model")
 
 
-#### progression and experiments
+### texturing progression
+i'll expand these over time, but i'll try to keep them brief for now and avoid rambling.
 
-this will end up being the bulk of this page. coming soon.
+
+#### earliest versions
+i mentioned briefly above that the first versions were super basic. the initial version just created solid colors, one per "material" that the model needed (like a red shirt, blue pants, light skin, etc).
+
+after that i had an llm generate super simple patterns as a square. then each material square would be stretched or squished to fit each block face that required that texture/material.
+
+then i eventually made it a little smarter, such that it would get cropped or tiled to avoid distortion when being applied to block faces.
+
+and finally, i think the most "advanced" version of this would create a base color per material, then would use simplex noise to slightly shift colors of pixels so you could clearly see that it was all pixelated. then i also added the ability for the llm to generate those generic texture materials, and then also create face-specific textures. e.g., a face would the "skin" texture material as a base, but then it could paint on eyes and a mouth to create a face, and even facial expressions.
+
+this was done over the course of several weeks i think. [here's quick demo](https://x.com/gabebusto/status/1919393335224995917) of the per-face texturing.
+
+
+#### first projection attempt
+the app's texturing didn't progress much for several weeks. i focused on releasing an early version of the blocksmith site and getting that up and running. but i eventually was able to create the first cool version of my texturing engine: very simple camera projection.
+
+i experimented with a few things that led to this point. one was trying to load the model with its texture atlas, where each pixe is a unique color, almost like a unique ID. then i thought i could take a screenshot of the model, and based on the angle, i could see which large "minecraft" pixels were visible, and map them back to the original pixel on the original atlas. there was one major problem with this though: lighting in the rendered scene (along with other things) changes the color *slightly*, and just enough that it becomes nearly impossible to accurately recognize each unique color and its ID.
+
+so i came up with another idea. i had ai write a script that could take the cubes of a model, and generate orthographic renders of front/back/left/right/top/bottom. the way it worked was like this:
+- pick an orthographic angle to extract. one example would be a "front" angle, which should generate an image that looks like you're staring at the model head-on from the front.
+- iterate over the model geometry
+- get each cuboid's +Z / north / front face, its size, and world position
+- do the math to ensure everything is centered and can fit onto 512x512 image; so make sure things are scaled and positioned relative in this image to where they would be in the real world
+- then for each extracted "frontal" face, add a square that represents that face on the image, and do this from back-to-front. (we want to back to front to make sure that we faithfully reproduce an orthographic view of the model, including faces that are hidden / occluded)
+
+the result is almost as if you took a screenshot of the model from the exact, perfect front angle. except each extracted cube face is just a black outline, and everything else is white.
+
+so you could use this process to generate orthographic front, back, left, right, top, and bottom "views" of the model. my goal was then to use a diffusion model that supports canny edge guidance (i.e. that could paint inside the lines you give it), and see if it could paint these visually vague views using some prompt engineering techniques.
+
+the result was that, YES - we could get some sane looking images using this technique! now, what was nice about this is that it was easy to paint my model. i could essentially reverse the process the generated the orthographic view, and i knew which regions of the image belonged to which cube faces. so i would just crop the painted image and apply it to that cube's face. there was a little more to it, but this is a simple explanation.
+
+[here's a demo video](https://x.com/gabebusto/status/1931882012710769076) showing how my process worked for painting one side of a model (that i think was meant to be an industrial drill kind of tool). as you can see, only one side of it was painted, and the rest of the model is still gray.
+
+however, i was using replicate at the time, and after testing with several models, the best one was pretty expensive at ~$0.05/image. so if i wanted to paint all 6 angles of the model, i would end up having to charge for > $0.30 to maintain some kind of margin. but not only that, since each process ran indepdently, they might look TOTALLY different.
+
+so what i settled on was this:
+- use my script to generate front, left, right, and top-down orthographic views
+- pack them onto a 2x2 grid with some consistent format like front, top, left, right
+- give that one image to this diffusion model
+- take the painted version of the image
+- break the grid back into their individual orthographic images
+- run my process of extracting face regions and painting them onto each block face
+
+now i need to solve yet *another* problem. we're only painting 4 views of the model. not to mention the fact that there might even be occluded faces from each of these views that also need to be painted. so i solved this the simplest way i could think. basically, i creating a json mapping that showed each cuboid and face of the model, and which ones had texturing, and which ones didn't. then i instructed the llm to use the prompt, along with this data, and output a full "texturing strategy" that gives me 100% coverage. its goal was to help take painted faces, and which painted faces can/should fit onto other unpainted faces, to create the most cohesive model possible.
+
+and in many cases, this *actually* worked. this silly, hacked together process was able to do a decent job.
+
+[here's a demo video](https://x.com/gabebusto/status/1932082333579977037) showing off the full model texturing version of this pipeline (which is actually still live on the site, btw!).
+
+from here, i really wasn't sure what to do to continue improving it, but i was confident i'd figure it out.
+
+
+#### improved per-block texturing
+coming soon!
