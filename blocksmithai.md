@@ -11,9 +11,9 @@ this is a page to go over aspects of blocksmith that i feel comfortable sharing 
 - [why blocksmith is different](#why-blocksmith-is-different)
 - [early prototype](#early-prototype)
 - [model generation overview](#model-generation-overview)
-- [texturing pipeline](#overview)
-    - [why current tools fail](#overview)
-    - [requirements i needed](#overview)
+- [texturing pipeline](#texturing-pipeline)
+    - [why current tools fail](#why-current-tools-fail)
+    - [requirements i needed](#requirements-i-needed)
     - [progression and experiments](#overview)
 
 
@@ -86,9 +86,62 @@ here are some demos from my x profile:
 
 the texturing at this point was still VERY basic. but i learned a whole lot about it that i'll share below.
 
-the version of the model generation pipeline that's live on blocksmith today (as of September 2025) is *very* similar, but has been improved and optimized to allow ai to create more highly detailed models while saving on output tokens.
+the version of the model generation pipeline (not texturing) that's live on blocksmith today (as of September 2025) is *very* similar to this original version, but has been improved and optimized to allow ai to create more highly detailed models while saving on output tokens.
 
 
 ### texturing pipeline
+this is where i've spent a bulk of my time over the last several months. there was a ton of stuff to learn here regarding how to generate textures for these block style models.
 
-coming soon!
+here's a quick screengrab from one of the old videos of the original model gen + texturing pipeline (from april 2025):
+![Asset Hero Person Model](images/assethero-person-model.png "Asset Hero Person Model")
+
+and here's the latest texturing engine from blocksmith and a zombie model it created and textured (from september 2025):
+![Blocksmith Zombie Model](images/blocksmith-zombie-model.png "Blocksmith Zombie Model")
+
+there's still lots of room for improvement, and i have a much clearer path for progression than i used to.
+
+the current version of the texturing pipeline:
+- takes a 3d block model, and either generates a texture atlas for it dynamically similar to blockbench's atlas creation process, or uses one that is provided.
+    - the reason i support using one that is provided is because users can upload a bbmodel file (and soon a glb/gltf file) for texturing. and i want to preserve the choices made for unwrapping the model onto the atlas, and even preserve transparency (alpha channel = 0) and alpha testing/cutouts.
+- the model is then sent to my modal.com webapp where i have a self-hosted mv-adapter model running, which uses stable diffusion xl (sdxl) to paint the model from multiple different angles
+- then i take the resulting images and "project" them onto the model atlas with a custom process specific to blocky models and their pixelated textures
+- then return the model and painted atlas for viewing
+
+this was the culmination of a LOT of trial and error and dead ends that drove me crazy.
+
+
+#### why current tools fail
+pretty much every major 3d pipeline / tool / platform at the moment has a combined mesh generation and texturing process. and it makes sense why given how those models work. as a quick intro, these models fail for a few reasons:
+
+- the process of texturing is usually combined with mesh generation. and since every state of the art 3d ai model can't generate true cuboid geometry, it's not possible to also use the provided texturing engine/process
+- for any separate texturing processes/engines, like [hunyuan 3d 2.1 paint](https://github.com/Tencent-Hunyuan/Hunyuan3D-2.1/tree/main/hy3dpaint), or meshy.ai, their models have been trained to paint high-poly models and output high resolution atlases. they aren't able to create truly pixelated textures, nor are they able to even approximate them. they look terrible.
+    - not only that, but they don't "understand" blocky models, because they're visually vague. recall that 3d block model of a person above that was created by blocksmith. that model looks *identical* from the front and the back. which side should be painted with front features? what about back features? left and right also look identical to each other. diffusion models have a hard time painting visually vague objects.
+- all texturing engines or pipelines (at least that i've found) are not able to re-use the atlases you give them. the reason blocky style models from minecraft/hytopia look pixelated is because they're actually *very* small. and they usually come in sizes that are a factor of 2: 32x32, 64x64, 128x128, or 256x256. they're rarely larger than that. and when "stretched" onto the model, we use nearest filtering to ensure that each pixel is crisp and clear, otherwise we end up with more of an "airbrushed" look.
+
+there are potentially other reasons these tools fail, but that's a good summary of the major points. not to mention that trying to make a simplified, blocky version of a real world thing look really good takes some artistic interpretation and intuition. and this is just not a style that's captured well in the training data sets for image generation models. this data is much less abundant compared to other styles.
+
+to illustrate my point, here's an example of meshy's attempt to paint a handgun model with a pixel art style. you can also see that the atlas is 2048x2048; very high resolution! you can sort of tell if tried making it pixelated, but it's not a very good attempt. a result of the fact that it's just not designed or trained to make textures in that style, which is fair. it's not something they're focused on.
+![Meshy Pixelart Handgun](images/meshy-handgun-textured-pixely.png).
+
+
+#### requirements i needed
+you can pretty much guess what my requirements were based on everything i said above. basically what i needed is the following:
+1. a separate process that could take my model and paint it
+2. something that could generate decent pixel art styling
+3. something that could re-use or generate a "proper" 3d block model texture atlas that will result in a pixelated look
+4. something that can paint across seams, but can also apply textures that respect seams when needed.
+    - (this one wasn't mentioned above, but i'll touch on why it's important)
+
+my original texturing process was focused on generating really simple square patterns and then squeezing them or stretching them to fit a face. basically, it would create a "texture" for a shirt. one for pants. one for skin. etc. then take that square texture, and force it to fit on every face of a block that should have that texture.
+
+a later version could generate patterns, and then intelligently crop them to fit faces without distortion, or repeat/tile the pattern. and eventually i supported per-face texturing meaning the ai could generate generic texture patterns, and they would get applied without distortions; but then for something like a face, it could generate facial expressions and add facial details.
+
+even as recently as july i still had a texturing process that was only able to paint one cube at a time, meaning that painting a model across seams was impossible.
+
+as i showed in the zombie image above from my latest texturing engine update, you can see that the zombie has a stripe of cloth wrapped around its head. this process allows for painting the entire model across seams, and is also smart enough / capable enough to ensure that some seams are respected. like where the blue torn shirt ends and the pants begin.
+![Blocksmith Zombie Model](images/blocksmith-zombie-model.png "Blocksmith Zombie Model")
+
+
+#### progression and experiments
+
+this will end up being the bulk of this page. coming soon.
