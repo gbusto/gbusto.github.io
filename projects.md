@@ -16,7 +16,8 @@ most of these were full end-to-end apps that were deployed, had a signup flow, a
 
 ### blocksmith ai - online at blocksmithai.com
 ![Blocksmith AI](images/blocksmithai-card.png "Blocksmith AI")
-(🚧 working on creating a new page to go into more detail about blocksmith, its progression, and the trial and error i went through)
+
+🚧 *[blocksmith ai technical writeup  (WIP)](./blocksmithai.md)* 🚧
 
 this is the "real" ai product i mentioned in my home page intro. by real, i mean it's more than just a gpt wrapper. it's a webapp that let's you create 3d block models (think minecraft) from a prompt. it also has the ability to texture them using the classic pixel art look that minecraft is known for.
 
