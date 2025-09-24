@@ -7,11 +7,11 @@ layout: page
 
 most of these were full end-to-end apps that were deployed, had a signup flow, and database. some were just prototypes or for fun.
 
-- [blocksmith ai](#blocksmith-ai---online-at-blocksmithaicom)
-- [ai tutor](#ai-tutor-duolingo-like-web-app---offline)
-- [research paper assistant](#research-paper-assistant-prototype)
-- [other random ai apps](#other-random-ai-apps)
-- [nft art marketplace](#an-nft-art-marketplace-full-web-app--android-tv-app--custom-smart-contracts)
+- [blocksmith ai](#blocksmith-ai---online-at-blocksmithaicom) (generate 3d block models from a prompt or image)
+- [ai tutor](#ai-tutor-duolingo-like-web-app---offline) (duolingo style ai tutor)
+- [research paper assistant](#research-paper-assistant-prototype) (infinite canvas, start multiple inline chats, add notes)
+- [other random ai apps](#other-random-ai-apps) (several ai-powered apps; process videos, score youtube content, analyze landing page)
+- [nft art marketplace](#an-nft-art-marketplace-full-web-app--android-tv-app--custom-smart-contracts) (built a full nft art marketplace as a startup)
 
 
 ### blocksmith ai - online at blocksmithai.com

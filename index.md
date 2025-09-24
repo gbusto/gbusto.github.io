@@ -4,9 +4,9 @@ layout: page
 ---
 
 ## quick intro
-i'm gabe, and i'm a builder at heart with a highly generalized skill set. over the last six months, i developed a deep interest in becoming something like an applied ai engineer or research engineer after building and launching what i would consider my first "real" ai product. see the technical writeup for it [here](./blocksmithai.md).
+i'm gabe, a builder at heart with a broad, generalized skill set. over the last few years i've been exploring different ways of creating things on my own, from testing business models to building and launching ai tools. that path eventually led me to [blocksmith ai](./blocksmithai.md), my first "real" product that combines applied ai with game development.
 
-i basically want to be able to take my builder skills + mindset, and focus my time and energy on building really cool, novel, and actually useful ai products and tools. i'm working on building up my foundational knowledge and skills, because i don't want to have any major limitations. e.g. if i need to take a research paper with no code and implement what they found (assuming its complete enough to do so), i want to be able to do that. this is what i'm working towards.
+i'm now looking to join a company working with ai — ideally as an applied ai or research engineer. my focus is on growing into a builder without limits: able to move fluidly between raw research, published code, open-weight models, and production systems, and turn them into tools and prodcuts that people actually use.
 
 
 ## currently working on:
@@ -21,8 +21,6 @@ i basically want to be able to take my builder skills + mindset, and focus my ti
     - updating blocksmith ux to more of a workflow than a conveyer belt
         - work in a single ui view where you can generate a concept image, use that to generate a model, edit via prompt, then texture
             - this type of ux is what's necessary to make it a good experience to add animation support finally
-
-- looking to join a company working with ai in some capacity; ideally as an applied ai engineer or ai research engineer type role
 
 
 ## projects / apps
