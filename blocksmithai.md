@@ -6,6 +6,8 @@ layout: page
 ## blocksmith ai technical writeup
 this is a page to go over aspects of blocksmith that i feel comfortable sharing without giving too much away about how it works. i may at some point open source it or parts of it, but for now i'm keeping it as a closed saas app.
 
+to make it easier to parse out information on this page, you can view [the latest raw markdown file here](https://raw.githubusercontent.com/gbusto/gbusto.github.io/refs/heads/main/blocksmithai.md), then copy it all into chatgpt or whatever chat model you want, and ask questions.
+
 - [why i built this](#why-i-built-this)
 - [why blocksmith is different](#why-blocksmith-is-different)
 - [early prototype](#early-prototype)
