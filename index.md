@@ -10,7 +10,7 @@ i basically want to be able to take my builder skills + mindset, and focus my ti
 
 
 ## currently working on:
-- reading [*neural networks from scratch*](https://nnfs.io/); on chapter 5 at the moment
+- reading [*neural networks from scratch*](https://nnfs.io/); on chapter 6 as of sept 24 2025
 
 - improving blocksmithai.com:
     - improving model generation; don't have a ton of raw data, so exploring fine tuning options vs a simple rag-like approach to pull exemplars from different model classes
