@@ -6,7 +6,7 @@ layout: page
 ## quick intro
 i'm gabe, a builder at heart with a broad, generalized skill set. over the last few years i've been exploring different ways of creating things on my own, from testing business models to building and launching ai tools. that path eventually led me to [blocksmith ai](./blocksmithai.md), my first "real" product that combines applied ai with game development.
 
-i'm now looking to join a company working with ai — ideally as an applied ai or research engineer. my focus is on growing into a builder without limits: able to move fluidly between raw research, published code, open-weight models, and production systems, and turn them into tools and prodcuts that people actually use.
+i'm now looking to join a company working with ai, ideally as an applied ai or research engineer. my focus is on growing into a builder without limits: able to move fluidly between raw research, published code, open-weight models, and production systems, and turn them into tools and prodcuts that people actually use.
 
 
 ## currently working on:
