@@ -21,8 +21,8 @@ to make it easier to parse out information on this page, you can view [the lates
     - [improved per-block texturing](#improved-per-block-texturing)
     - [creation of the latest pipeline](#creation-of-the-latest-pipeline)
         - [3d-aware 2d diffusion](#3d-aware-2d-diffusion)
-        - [manual multi-view with sdxl](#overview)
-        - [manual multi-view with sd3.5](#overview)
+        - [manual multi-view with sdxl](#manual-multi-view-with-sdxl)
+        - [manual multi-view with sd3.5](#manual-multi-view-with-sd3.5)
         - [mv-adapter test](#overview)
 
 
@@ -291,6 +291,43 @@ after it was done, i tried testing it out in some way that could demonstrate whe
 perhaps with more time i *could* find a way to make that work, but it would require more deterministic unwrapping, a deeper understanding of how controlnet influences sdxl, etc. but it was a good first shot i think.
 
 
----
+##### manual multi-view with sdxl
+before i know about mv-adapter, i decided to try and tackle multi-view diffusion myself. diffusion models can do batch diffusion, but they don't have any way to share details or information between each one. so my idea was to try setup a diffusion pipeline where i would use controlnet canny + ip adapter. the process looked something like this:
+- render the model using off-screen rendering, and take screenshots of from a pre-determined set of elevation and azimuths. ensure that lighting/coloring would make it easy for controlnet canny to detect edges to help guide diffusion
+- take one of the screenshot angles (ideally using the angle that sdxl paints the best consistently) and generate a single reference image based on the prompt
+    - optionally, if i uploaded a reference image, one would not be generated
+- then for each round of diffusion, provide the canny edge control image for edge guidance + use ip adapter for the reference image, and attempt to paint the model from that angle
 
-more to come soon!
+there was a bit more to it than that that was needed to help with backprojection, but i can talk about that later. i knew i could do backprojection, but getting consistent painting of a model from multiple angles was tough.
+
+and this attempt didn't really work... there were some issues complicating things, but overall SDXL didn't do a great job of painting in the lines OR using the reference image. i didn't play around the knobs and dials too much for controled guidance and reference image weight because i didn't have faith those would be productive tests.
+
+one of the issues is that in my "clay" rendering, i rendered the model with essentially just a gray texture color. BUT, i would maintain any transparency used by the original artist. for 3d block models, transparency is used to create layers or more complex shapes that a cube can't express. below is a minecraft-style skeleton to illustrate. the torso is actually a single cube, but the artist used transparent pixels for that region of the atlas to give the skeleton that hollowed out look.
+
+![Skeleton Image](images/minecraft-skeleton.png "Skeleton Image")
+
+transparency in a 3d cube is fine and rendered off-screen just fine. the issue was more with 2d planes that had transparency. technically, a 2d plane has 2 faces: a front and a back (or top and bottom, or left and right depending on the orientation). if you paint BOTH sides of the 2d atlas, you get a weird flickering effect because both sides of the plane are rendered in the *exact* same place, and so the renderer struggles to figure out which color/texture to show you. so it flickers, and it's pretty annoying; one term to describe this is **z-fighting**.
+
+to fix this, most block model artists make one side of the 2d plane completely transparent. in tools like Blockbench, it automatically defaults to just showing the opposite side of the texture (just mirrored). but in other renderers, sometimes the default is **backface culling**, which means that if you're looking at the side of the 2d plane that's transparent, the entire 2d plane disappears. the renderer will only show the front-facing pixels when you're looking at them, but from behind, you won't see those pixels at all.
+
+to illustrate, take a look at these two clay renders of a sword. the sword's guard and tip are a 2d planes (that used transparency to make the shapes more interesting) that used our trick of making one side completely transarent to avoid z-fighting.
+
+here is a front oblique view of the sword:
+![Sword Clay Render Front](images/sword-clay-render-front.png)
+
+and here is a back oblique view of the sword (180 around the model):
+![Sword Clay Render Back](images/sword-clay-render-back.png)
+
+you'll notice on the back side, the tip and guard are completely gone. that's because with this setup, we were doing backface culling. and to be honest, i'm not sure why i didn't investigate the more to NOT do backface culling, because it certainly made things more confusing for SDXL in texturing.
+
+i'll share a few images from sdxl to give you an idea of how sdxl performed.
+
+![SDXL Sword Front Painting](images/sdxl-mv-sword-example.png)
+
+it's not terrible, and i actually think here i was using a pixel art lora of sdxl that i made from a custom dataset. it's not terrible, but could be much better. at this point, i was just experimenting but wasn't super happy with what i saw.
+
+i actually think i could have achieved better results if i picked slightly better camera angles and fixed the backface culling issue. but let's move on SD3.5 now.
+
+
+##### manual multi-view with sd3.5
+this section will be much shorter, because i already introduced my whole process. more to come soon.
