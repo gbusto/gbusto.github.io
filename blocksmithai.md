@@ -22,7 +22,7 @@ to make it easier to parse out information on this page, you can view [the lates
     - [creation of the latest pipeline](#creation-of-the-latest-pipeline)
         - [3d-aware 2d diffusion](#3d-aware-2d-diffusion)
         - [manual multi-view with sdxl](#manual-multi-view-with-sdxl)
-        - [manual multi-view with sd3.5](#manual-multi-view-with-sd3.5)
+        - [manual multi-view with sd3.5](#manual-multi-view-with-sd35)
         - [mv-adapter test](#overview)
 
 
@@ -330,4 +330,12 @@ i actually think i could have achieved better results if i picked slightly bette
 
 
 ##### manual multi-view with sd3.5
-this section will be much shorter, because i already introduced my whole process. more to come soon.
+this section will be much shorter, because it's literally the same process as the sdxl manual multi-view diffusion process, except with Stable Diffusion 3.5.
+
+the main things to note are that SD3.5 is much newer and doesn't have years of community support and tooling behind it, and it's a different architecture. it has a few variants, primarily just a SD3.5 Medium and an SD3.5 Large. and for whatever reason, the "large" variant is the one that has the most community and company support. so in order to use controlnet and ip adapter, i needed to use the "large" version.
+
+it did do noticeably better, but still not all that consistent. below is an example of the same model.
+
+![SD3.5 Sword Front Painting](images/sd35-mv-sword-example.png)
+
+this is where mv-adapter comes to the rescue! (sort of)
