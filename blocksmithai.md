@@ -8,6 +8,15 @@ this is a page to go over aspects of blocksmith that i feel comfortable sharing 
 
 to make it easier to parse out information on this page, you can view [the latest raw markdown file here](https://raw.githubusercontent.com/gbusto/gbusto.github.io/refs/heads/main/blocksmithai.md), then copy it all into chatgpt or whatever chat model you want, and ask questions.
 
+#### try blocksmith for free!
+if you want to try the app, you can visit [blocksmithai.com](https://blocksmithai.com). there's a free tier that gives you 100 credits (i.e. let's you take 10 actions) with no card required. sign up using google, then you'll land on the /generate page. enter a prompt like `a minecraft style person`. you can then hit the `Enhance` button to improve the prompt detail automatically. then click generate. this generation will cost 10 credits and take ~1 minute.
+
+once that's done, you can click the `Texture` button which will take you to the /texture page. enter in a prompt again like `a minecraft person wearing a pinstripe suit and red tie`, then click `Texture`. this will use 10 credits and take ~1-2 minutes to run, then should render a painted version of your model. you can also provide an image for both the model generation and texturing.
+
+so, give it a try and enjoy :D
+
+
+## table of contents
 - [why i built this](#why-i-built-this)
 - [why blocksmith is different](#why-blocksmith-is-different)
 - [early prototype](#early-prototype)
