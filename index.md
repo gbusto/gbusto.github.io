@@ -11,6 +11,7 @@ i'm now looking to join a company working with ai, ideally as an applied ai or r
 
 ## posts / technical writeups
 - [blocksmith ai](./blocksmithai.md) - technical writeup
+- [helpful resources](./resources.md) - a collection of helpful resources
 - [(oct 6 2025) omniflow](./posts/oct-6-2025-omniflow.md) - an open source tool to make data transformation, cleaning, and prep easier prior to training and fine tuning
 
 

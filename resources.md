@@ -11,8 +11,8 @@ this is a page i wanted to put together with a list of project ideas, resources,
 - [books](#books)
 - [videos](#videos--channels)
 - [project ideas](#project-ideas)
-- sites and platforms
-- repositories
+- [sites and platforms](./resources.md)
+- repositories (coming soon!)
 
 
 ### books
