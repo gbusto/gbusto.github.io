@@ -9,6 +9,12 @@ i'm gabe, a builder at heart with a broad, generalized skill set. over the last 
 i'm now looking to join a company working with ai, ideally as an applied ai or research engineer. my focus is on growing into a builder without limits: able to move fluidly between raw research, published code, open-weight models, and production systems, and build products that have a big impact and provide tons of value.
 
 
+## socials
+- X - [@gabebusto](https://x.com/gabebusto)
+- LinkedIn - [@gabrielbusto](https://linkedin.com/in/gabrielbusto)
+- Github - [@gbusto](https://github.com/gbusto)
+
+
 ## posts / technical writeups
 - [blocksmith ai](./blocksmithai.md) - technical writeup
 - [helpful resources](./resources.md) - a collection of helpful resources
