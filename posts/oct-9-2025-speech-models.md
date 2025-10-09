@@ -2,8 +2,7 @@
 
 ([Repo can be found here](https://github.com/gbusto/voice-clone-ivr))
 
-> [!NOTE]
-> the setup instructions may be missing steps, but should be mostly complete. if you want to try it out and run into issues, you can create an Issue or find [me on X](https://x.com/gabebusto)
+> 💡 the setup instructions may be missing steps, but should be mostly complete. if you want to try it out and run into issues, you can create an Issue or find [me on X](https://x.com/gabebusto)
 
 for reasons i won't explain at the moment, i wanted to play around with speech models and voice cloning via IVR - interactive voice response. i decided to use twilio since it has easy self-serve signup (and they gave me some free credits to test things out).
 
