@@ -18,6 +18,7 @@ i'm now looking to join a company working with ai, ideally as an applied ai or r
 ## posts / technical writeups
 - [blocksmith ai](./blocksmithai.md) - technical writeup
 - [helpful resources](./resources.md) - a collection of helpful resources
+- [(oct 9 2025) speed models](./posts/oct-9-2025-speech-models.md) - a quick writeup of a demo app playing with voice cloning via IVR, and a new speech model that can do true speech-to-speech
 - [(oct 6 2025) omniflow](./posts/oct-6-2025-omniflow.md) - an open source tool to make data transformation, cleaning, and prep easier prior to training and fine tuning
 
 
