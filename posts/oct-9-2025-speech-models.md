@@ -36,13 +36,13 @@ i had greater ambitions for this demo initially, and the real end goal was to tr
 
 one clever way to handle this though is to maybe have the user chat with a guided voice agent that guides them through different speech tasks to speak faster, slower, louder, quieter, with more or less emotion, etc. but i didn't want to go through with all of that.
 
-there is a `modal` folder though in the repo if you want to deploy the orpheus model. in the app dropdown, you'll see some of the default voices that come with orpheus.
+there is a `modal` folder though in the repo if you want to deploy the [orpheus model](https://huggingface.co/canopylabs/orpheus-3b-0.1-ft). in the app dropdown, you'll see some of the default voices that come with orpheus.
 ![Orpheus Voices](./posts-images/oct9/ivr-demo-dropdown.png)
 
 if you select one of those voices and use the TTS box below, it will take ~1 minute to generate the audio due to cold starting the model each time on modal. you could keep the container warm if you're using a cheaper GPU, but since this is a demo and i ran tests infrequently, keeping the container warm seemed like a waste of money. i'd rather just pay for cold start time.
 
 ## LFM2 - new speech model
-you'll notice in the repo there is a modal script for a speech model named LFM2. this is a really neat new model that can actually do *speech-to-speech*. as far as i know, the "old" way of doing things was:
+you'll notice in the repo there is a modal script for a speech [model named LFM2](https://huggingface.co/LiquidAI/LFM2-350M). this is a really neat new model that can actually do *speech-to-speech*. as far as i know, the "old" way of doing things was:
 - take user speech and convert it to text (likely server-side)
 - feed the text to an llm with conversation history
 - as the llm streams out tokens, feed them to a TTS model and stream back the audio. may need to buffer by sentence, not sure
@@ -60,6 +60,6 @@ there's also a voice client to test this all out via command line.
 
 the modal script uses an H100, so just be sure to manually stop the app once you're done because we keep the FastAPI modal app live when running the voice client.
 
-really neat model though and looking forward to seeing what else Liquid AI releases in the future.
+really neat model though and looking forward to seeing what else [Liquid AI](https://www.liquid.ai/) releases in the future.
 
 in my opinion, i think using dedicated STT, LLM, and TTS models is still the way to go. there are realtime STT APIs (like AssemblyAI's API), bigger LLMs are smarter and better at back-and-forth conversation, and TTS models are getting super small and super fast. so while LMF2 has ~fewer moving parts, i think it's still subpar when it comes to facilitating realtime, sane conversations.
